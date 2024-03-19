@@ -83,7 +83,7 @@ export async function getGeminiResponce(data: Question[]) {
     
     output should be like
     
-    { "Question 1": { "option": { "option number": 3 }, "value": { "answer": "Facilitating inter-process communication and synchronization" } }, "Question 2": { "option": { "option number": 2 }, "value": { "answer": "Initially, only one process could run at a time, but modern computers support multiple processes simultaneously." } }, "Question 3": { "option": { "option number": 2 }, "value": { "answer": "To schedule processes" } }, "Question 4": { "option": { "option number": 3 }, "value": { "answer": "Keeps track of process information" } }, "Question 5": { "option": { "option number": 1 }, "value": { "answer": "True" } } }
+    { "Question 1": { "option":  3 , "value": "Facilitating inter-process communication and synchronization"  }, "Question 2": { "option":  2 , "value":  "Initially, only one process could run at a time, but modern computers support multiple processes simultaneously."  }, "Question 3": { "option":  2 , "value":  "To schedule processes"  }, "Question 4": { "option": 3 , "value":  "Keeps track of process information"  }, "Question 5": { "option":  1 , "value": "True" } }
     
     
     it should always be a json output and the output should be in the above format`},

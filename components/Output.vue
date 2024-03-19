@@ -6,19 +6,49 @@
       </div>
     </div>
 
-    <div v-else-if="value.ouptutText !== ''" class="text-white">
-      <div class="py-3">Answers</div>
-      <div>
-        {{ value.ouptutText }}
+    <div v-else-if="value.ouptutText.success">
+      <!-- <div class="py-3">Answers</div> -->
+
+      <div class="flex gap-3 justify-center items-center p-5">
+        <!-- @vue-expect-error -->
+        <div
+          v-for="(value, key) in value.ouptutText.data"
+          :class="`nth-child-${key + 1}`"
+        >
+          <div
+            class="text-lg px-10 py-6 bg-gradient-to-r from-blue-500 via-green-500 to-yellow-500 background-animate"
+          >
+            {{ value.option }}
+          </div>
+        </div>
+      </div>
+
+      <div class="mt-5">
+        <!-- @vue-expect-error -->
+        <div v-for="(value, key) in value.ouptutText.data">
+          <div class="flex justify-start">
+            <div class="text-gray-400 mr-3">{{ key }}</div>
+            <div class="flex gap-3 items-center justify-start">
+              <!-- <span> {{ value.option }}</span> -->
+              <span>{{ value.value }}</span>
+            </div>
+          </div>
+          <hr class="my-2 border-gray-600" />
+        </div>
       </div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
+import type { Answer } from "~/lib/types";
+
 const value = defineModel<{
   loading: boolean;
-  [key: string]: any;
+  ouptutText: {
+    success: boolean;
+    data: Answer;
+  };
 }>({
   required: true,
 });
@@ -76,6 +106,24 @@ const value = defineModel<{
 
   75% {
     transform: translateY(100%);
+  }
+}
+
+.background-animate {
+  background-size: 400%;
+
+  -webkit-animation: AnimationName 3s ease infinite;
+  -moz-animation: AnimationName 3s ease infinite;
+  animation: AnimationName 3s ease infinite;
+}
+
+@keyframes AnimationName {
+  0%,
+  100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
   }
 }
 </style>
