@@ -50,14 +50,34 @@ export async function getGeminiResponce(data: Question[]) {
         })
     ];
 
-    const result = await model.generateContent({
-        contents: [{ role: "user", parts }],
-        generationConfig,
-        safetySettings,
-    });
+    try {
+        const result = await model.generateContent({
+            contents: [{ role: "user", parts }],
+            generationConfig,
+            safetySettings,
+        });
 
-    const response = result.response;
+        // handle the result
+        if (result.response === null || result == null) {
+            console.error("Error generating content [try]: ", result);
+            return {
+                success: false,
+                data: result,
+            };
+        }
 
-    return response.text()
+        const response = result.response;
+
+        return {
+            success: true,
+            data: response.text(),
+        }
+    } catch (error) {
+        console.error("Error generating content: ", error);
+        return {
+            success: false,
+            data: error,
+        };
+    }
 }
 
