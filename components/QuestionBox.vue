@@ -10,7 +10,7 @@
 
     <UButton
       :label="value.loading ? 'Asking Gemini...' : 'Spank it!'"
-      class="mt-5 mx-auto relative flex items-center text-gray-900 group bg-gradient-to-br from-purple-500 to-pink-500 group-hover:from-purple-500 group-hover:to-pink-500 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-purple-200 dark:focus:ring-purple-800"
+      class="mt-5 mx-auto relative flex"
       :loading="value.loading"
       @click="$emit('post')"
     />

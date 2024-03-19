@@ -1,9 +1,11 @@
 <template>
-  <div class="p-5">
-    <!-- @vue-expect-error -->
-    <QuestionBox v-model="bind" @post="post" />
-    <Output v-model="bind" />
-    <UNotifications />
+  <div>
+    <div class="p-5">
+      <ThemeButton class="absolute top-0 right-0 m-5" />
+      <QuestionBox v-model="bind" @post="post" />
+      <Output v-model="bind" />
+      <UNotifications />
+    </div>
   </div>
 </template>
 
