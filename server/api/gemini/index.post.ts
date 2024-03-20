@@ -6,7 +6,7 @@ export default defineEventHandler(async (event) => {
     const req = await readBody(event);
 
     if (!req) {
-        console.error("Invalid request")
+        console.error("Invalid request", req)
 
         setResponseStatus(event, 500)
 

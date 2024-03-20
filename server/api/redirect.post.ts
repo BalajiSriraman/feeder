@@ -33,31 +33,38 @@ export default defineEventHandler(async (event) => {
 
   console.info('Req Hit')
   try {
-    const questions = await $fetch('https://assessment-api.kalvium.community/api/assessments/OS_MCQ_L32/attempts', {
+    const questions = await $fetch(quizUrl + '/attempts', {
       method: 'POST',
       headers: {
         authorization: value
       }
     }
-    ).catch((e) => {
-      console.error(e)
+    ).then((res) => {
+      return JSON.stringify(res)
     })
+      .catch((e) => {
+        console.error(e)
+      })
 
-    // const questionId = await AnswerModel.create({
-    //   answer: JSON.stringify(questions),
-    //   token: value,
-    //   quizUrl: quizUrl
-    // }).then((res) => {
-    //   return res.id as string
-    // }).catch((e) => {
-    //   console.error(e)
-    // }
-    // )
 
-    // console.info('Question ID: ', questionId)
+    // const data = JSON.parse(questions);
+
+
+    const questionId = await AnswerModel.create({
+      answer: questions,
+      token: value,
+      quizUrl: quizUrl
+    }).then((res) => {
+      return res.id as string
+    }).catch((e) => {
+      console.error(e)
+    }
+    )
+
+    console.info('Question ID: ', questionId)
 
     return {
-      data: 'questionId',
+      data: questionId,
       status: 200
     }
 

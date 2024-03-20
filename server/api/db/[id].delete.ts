@@ -7,16 +7,16 @@ export default defineEventHandler(async (event) => {
   // @ts-expect-error
   const id = event.context.params.id!; // Get id from params
 
-  const result = await AnswerModel.findById(id); // Delete the document with the given id
+  const result = await AnswerModel.deleteOne({ _id: id }); // Delete the document with the given id
 
-  if (result) {
+  if (result.deletedCount > 0) {
     return {
-      data: result,
+      message: 'Successfully deleted',
       status: 200
     }
   } else {
     return {
-      data: 'No document found with the given id',
+      message: 'No document found with the given id',
       status: 404
     }
   }
