@@ -1,9 +1,9 @@
 <template>
   <div>
+    <ThemeButton />
     <div class="p-5">
-      <ThemeButton class="absolute top-0 right-0 m-5" />
       <!-- v-if="!bind.ouptutText" -->
-      <QuestionBox v-model="bind" @post="post" />
+      <QuestionBox v-if="!bind.ouptutText" v-model="bind" @post="post" />
       <Output v-model="bind" />
       <UNotifications />
     </div>
