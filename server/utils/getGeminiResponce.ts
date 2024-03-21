@@ -6,10 +6,6 @@ import {
 import { Question } from "~/lib/types";
 
 const MODEL_NAME = "gemini-1.0-pro";
-const API_KEY = "AIzaSyDwaW_hvcOjb0qK0qj-J2T_Ek2kY38z_zY";
-
-const genAI = new GoogleGenerativeAI(API_KEY);
-const model = genAI.getGenerativeModel({ model: MODEL_NAME });
 
 const generationConfig = {
     temperature: 0.9,
@@ -36,7 +32,14 @@ const safetySettings = [
     },
 ];
 
-export async function getGeminiResponce(data: Question[]) {
+export async function getGeminiResponce(data: Question[], token: string) {
+
+    const API_KEY = token;
+
+    const genAI = new GoogleGenerativeAI(API_KEY);
+
+    const model = genAI.getGenerativeModel({ model: MODEL_NAME });
+
 
     const parts = [
         { text: " it can be a an array of text and there will be 5 questions and options  some time the user can give data along with some doc or reference regarding to the questions asked  in the array data which can be used as reference to answer the question" },

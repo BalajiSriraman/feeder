@@ -8,7 +8,7 @@
           :class="`nth-child-${key + 1}`"
         >
           <div
-            class="text-lg px-10 py-6 bg-gradient-to-r from-blue-500 via-green-500 to-yellow-500 background-animate"
+            class="text-lg px-10 py-6 bg-gradient-to-r from-blue-500 via-green-500 to-yellow-500 background-animate hover:bg-blue-500 cursor-pointer"
           >
             {{ value.option }}
           </div>
@@ -29,6 +29,8 @@
         </div>
       </div>
     </div>
+
+    <UNotifications />
   </div>
 </template>
 

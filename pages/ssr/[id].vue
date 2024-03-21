@@ -1,21 +1,11 @@
 <template>
   <div>
-    <div v-if="!bind.loading">
-      <UButton
-        :label="bind.button ? 'Asking Gemini...' : 'Spank it!'"
-        class="mt-5 mx-auto relative flex"
-        :loading="bind.button"
-        @click="post"
-      />
+    <div v-if="bind.loading" class="mt-5">
       <div class="flex items-center justify-center h-32">
         <i class="loader --6" />
       </div>
     </div>
-
-    <div v-else>
-      <Logger v-model="bind" />
-    </div>
-    <UNotifications />
+    <Logger v-else v-model="bind" />
   </div>
 </template>
 
@@ -23,24 +13,34 @@
 const route = useRoute();
 const id = ref(route.params.id);
 
+const toast = useToast();
+
+const { data: mongoRes, pending } = await useFetch(`/api/db/${id.value}`);
+
 const bind: {
   inputText: string;
   loading: boolean;
   ouptutText: any;
-  button: boolean;
 } = reactive({
   inputText: "",
-  loading: false,
+  loading: true,
   ouptutText: "",
-  button: false,
 });
+
+const regex = /\/([^\/]+)\/?$/;
+
+// @ts-expect-error
+const url = mongoRes.value?.data.quizUrl;
+// @ts-expect-error
+const token = mongoRes.value?.data.token;
+
+const match = url.match(regex);
 
 const callGemini = async () => {
   const res = await $fetch("/api/gemini", {
     method: "POST",
     body: {
       data: bind.inputText,
-      token: localStorage.getItem("token"),
     },
   });
 
@@ -48,57 +48,47 @@ const callGemini = async () => {
     console.error("Error in processing the data");
   }
 
-  console.log("res", res);
+  toast.add({
+    title: "Success",
+    color: "green",
+    description: "Data processed successfully",
+    timeout: 3000,
+  });
 
-  bind.loading = true;
+  bind.loading = false;
 
   bind.ouptutText = res;
 };
 
-const post = async () => {
-  bind.button = true;
+if (match) {
+  const lastPath = match[1];
 
-  const { data: mongoRes } = await $fetch(`/api/db/${id.value}`);
-
-  const regex = /\/([^\/]+)\/?$/;
-
-  // @ts-expect-error
-  const url = mongoRes.quizUrl;
-  // @ts-expect-error
-  const token = mongoRes.token;
-
-  const match = url.match(regex);
-
-  // bind.loading = true;
-
-  if (match) {
-    const lastPath = match[1];
-
-    const data = await $fetch(
-      `https://assessment-api.kalvium.community/api/assessments/${lastPath}/attempts`,
-      {
-        method: "POST",
-        headers: {
-          authorization: token,
-        },
-      }
-    ).then((res) => JSON.stringify(res));
-
-    bind.inputText = data;
-
-    // validate input for a json
-    try {
-      JSON.parse(bind.inputText);
-      await callGemini();
-    } catch (error) {
-      console.log("bind.inputText", bind.inputText);
-      console.error("Please enter a valid JSON object.");
-      throw new Error("Invalid JSON object");
+  const data = await $fetch(
+    `https://assessment-api.kalvium.community/api/assessments/${lastPath}/attempts`,
+    {
+      method: "POST",
+      headers: {
+        authorization: token,
+      },
     }
-  } else {
-    console.log("No match found.");
+  ).then((res) => JSON.stringify(res));
+
+  bind.inputText = data;
+
+  // validate input for a json
+  try {
+    JSON.parse(bind.inputText);
+    await callGemini();
+  } catch (error) {
+    console.log("bind.inputText", bind.inputText);
+    console.error("Please enter a valid JSON object.");
+    throw new Error("Invalid JSON object");
   }
-};
+} else {
+  console.log("No match found.");
+}
+
+// });
 </script>
 
 <style scoped>

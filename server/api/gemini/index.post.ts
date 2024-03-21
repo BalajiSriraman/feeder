@@ -16,9 +16,6 @@ export default defineEventHandler(async (event) => {
         }
     }
 
-
-    // console.log("Data: ", req)
-
     const data = JSON.parse(req.data)
 
     if (!data) {
@@ -43,7 +40,7 @@ export default defineEventHandler(async (event) => {
         }
     }
 
-    const result = await getGeminiResponce(questions.output)
+    const result = await getGeminiResponce(questions.output, req.token)
 
     if (!result.success || result.data === null || result.data === undefined) {
         return {
@@ -51,6 +48,8 @@ export default defineEventHandler(async (event) => {
             status: 500
         }
     }
+
+    console.log('Gemini API response was successful')
 
     return {
         data: result.data,
