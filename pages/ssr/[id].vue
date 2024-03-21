@@ -37,10 +37,12 @@ const token = mongoRes.value?.data.token;
 const match = url.match(regex);
 
 const callGemini = async () => {
+  console.log("match", localStorage.getItem("token"));
   const res = await $fetch("/api/gemini", {
     method: "POST",
     body: {
       data: bind.inputText,
+      token: localStorage.getItem("token"),
     },
   });
 
@@ -80,7 +82,6 @@ if (match) {
     JSON.parse(bind.inputText);
     await callGemini();
   } catch (error) {
-    console.log("bind.inputText", bind.inputText);
     console.error("Please enter a valid JSON object.");
     throw new Error("Invalid JSON object");
   }

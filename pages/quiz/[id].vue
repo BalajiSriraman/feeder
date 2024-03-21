@@ -21,6 +21,7 @@
 
 <script lang="ts" setup>
 const route = useRoute();
+const toast = useToast();
 const id = ref(route.params.id);
 
 const bind: {
@@ -56,6 +57,19 @@ const callGemini = async () => {
 };
 
 const post = async () => {
+  localStorage.getItem("token");
+
+  if (!localStorage.getItem("token")) {
+    toast.add({
+      title: "Error",
+      color: "red",
+      description: "Please login to continue navigate to /token",
+      timeout: 3000,
+    });
+
+    return;
+  }
+
   bind.button = true;
 
   const { data: mongoRes } = await $fetch(`/api/db/${id.value}`);
