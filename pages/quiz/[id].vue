@@ -2,7 +2,7 @@
   <div>
     <div v-if="!bind.loading">
       <UButton
-        :label="bind.button ? 'Asking Gemini...' : 'Spank it!'"
+        :label="bind.button ? 'Asking Gemini...' : 'Spank Once More!'"
         class="mt-5 mx-auto relative flex"
         :loading="bind.button"
         @click="post"
