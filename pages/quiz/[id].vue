@@ -14,6 +14,12 @@
 
     <div v-else>
       <Logger v-model="bind" />
+
+      <UButton
+        label="Spank Hard to copy question and answer!"
+        class="mt-5 mx-auto relative flex cursor-grab"
+        @click="getQuestionsandOptions"
+      />
     </div>
     <UNotifications />
   </div>
@@ -56,6 +62,28 @@ const callGemini = async () => {
   bind.ouptutText = res;
 };
 
+const getQuestions = async () => {
+  const res = await $fetch("/api/question", {
+    method: "POST",
+    body: {
+      data: bind.inputText,
+      token: localStorage.getItem("token"),
+    },
+  });
+
+  if (res.status !== 200) {
+    console.error("Error copying the data");
+  }
+
+  navigator.clipboard.writeText(JSON.stringify(res.data));
+
+  toast.add({
+    title: "Success",
+    color: "green",
+    description: "Data copied to clipboard successfully!",
+    timeout: 3000,
+  });
+};
 const post = async () => {
   localStorage.getItem("token");
 
@@ -104,6 +132,64 @@ const post = async () => {
     try {
       JSON.parse(bind.inputText);
       await callGemini();
+    } catch (error) {
+      console.log("bind.inputText", bind.inputText);
+      console.error("Please enter a valid JSON object.");
+      throw new Error("Invalid JSON object");
+    }
+  } else {
+    console.log("No match found.");
+  }
+};
+
+const getQuestionsandOptions = async () => {
+  localStorage.getItem("token");
+
+  if (!localStorage.getItem("token")) {
+    toast.add({
+      title: "Error",
+      color: "red",
+      description: "Please login to continue navigate to /token",
+      timeout: 3000,
+    });
+
+    return;
+  }
+
+  bind.button = true;
+
+  const { data: mongoRes } = await $fetch(`/api/db/${id.value}`);
+
+  const regex = /\/([^\/]+)\/?$/;
+
+  // @ts-expect-error
+  const url = mongoRes.quizUrl;
+  // @ts-expect-error
+  const token = mongoRes.token;
+
+  const match = url.match(regex);
+
+  // bind.loading = true;
+
+  if (match) {
+    const lastPath = match[1];
+
+    const data = await $fetch(
+      `https://assessment-api.kalvium.community/api/assessments/${lastPath}/attempts`,
+      {
+        method: "POST",
+        headers: {
+          authorization: token,
+        },
+      }
+    ).then((res) => JSON.stringify(res));
+
+    bind.inputText = data;
+
+    // validate input for a json
+    try {
+      JSON.parse(bind.inputText);
+      await getQuestions();
     } catch (error) {
       console.log("bind.inputText", bind.inputText);
       console.error("Please enter a valid JSON object.");
