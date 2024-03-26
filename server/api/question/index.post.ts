@@ -39,8 +39,13 @@ export default defineEventHandler(async (event) => {
         }
     }
 
+
+
     return {
-        data: questions.output,
+        data: {
+            questionAndOptions: questions.output,
+            prompt: " of the questions and option in the above key value answer me the correct option of the given options."
+        },
         status: 200
     }
 })
